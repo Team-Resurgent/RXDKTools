@@ -12,6 +12,21 @@
 
 This repository contains a **recompiled** `xbshlext.dll` and an Inno Setup installer. The original extension was built for older 32-bit Windows versions and no longer works on modern systems. This build targets **64-bit Windows 10 and Windows 11**.
 
+## Screenshots
+
+Click any image for full size.
+
+<p align="center">
+  <a href="images/neighborhood-overview.png"><img src="images/neighborhood-overview.png" width="400" alt="Xbox Neighborhood in Windows 11 Explorer"></a>
+  &nbsp;
+  <a href="images/console-context-menu.png"><img src="images/console-context-menu.png" width="400" alt="Context menu for a connected Xbox console"></a>
+</p>
+<p align="center">
+  <a href="images/console-drives.png"><img src="images/console-drives.png" width="400" alt="Xbox console drives in Explorer"></a>
+  &nbsp;
+  <a href="images/console-audio-folder.png"><img src="images/console-audio-folder.png" width="400" alt="Browsing an Xbox console folder in Explorer"></a>
+</p>
+
 ## Install
 
 Download or build `XboxNeighborhood-Setup.exe`, then run it as administrator. The installer registers the shell extension, adds Start menu and desktop shortcuts, and opens Neighborhood in Explorer.
