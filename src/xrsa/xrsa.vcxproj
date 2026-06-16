@@ -33,20 +33,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)xrsa_math.c" />
     <ClCompile Include="$(MSBuildThisFileDirectory)xrsa_benaloh.c" />
     <ClCompile Include="$(MSBuildThisFileDirectory)xrsa_bsafe.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <XrsaPrebuiltObj Include="$(MSBuildThisFileDirectory)rsa32_rc4fast.obj" />
-    <XrsaPrebuiltObj Include="$(MSBuildThisFileDirectory)rsa32_deskey.obj" />
-    <XrsaPrebuiltObj Include="$(MSBuildThisFileDirectory)rsa32_desport.obj" />
-    <XrsaPrebuiltObj Include="$(MSBuildThisFileDirectory)rsa32_desfast.obj" />
-    <XrsaPrebuiltObj Include="$(MSBuildThisFileDirectory)rsa32_spb.obj" />
-    <XrsaPrebuiltObj Include="$(MSBuildThisFileDirectory)rsa32_modes.obj" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)xrsa_rc4.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)xrsa_des.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)xrsa_des_tables.c" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)xrsa_modes.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
-  <Target Name="XrsaAppendPrebuiltObjs" BeforeTargets="Lib">
-    <ItemGroup>
-      <Lib Include="@(XrsaPrebuiltObj)" />
-    </ItemGroup>
-  </Target>
 </Project>
 
