@@ -17,10 +17,14 @@ function Find-Iscc {
 if (-not (Test-Path -LiteralPath $IssPath)) {
     throw "Missing $IssPath"
 }
-foreach ($required in @('xbshlext.dll', 'Icon.ico', 'WizardImage.bmp', 'WizardSmallImage.bmp')) {
+$xbshlextDll = Join-Path $PSScriptRoot 'out\bin\x64\Release\xbshlext.dll'
+if (-not (Test-Path -LiteralPath $xbshlextDll)) {
+    throw "Missing $xbshlextDll - build xbshlext (Release|x64) before creating the installer"
+}
+foreach ($required in @('Icon.ico', 'WizardImage.bmp', 'WizardSmallImage.bmp')) {
     $path = Join-Path $PSScriptRoot $required
     if (-not (Test-Path -LiteralPath $path)) {
-        throw "Missing $path - build xbshlext before creating the installer"
+        throw "Missing $path"
     }
 }
 

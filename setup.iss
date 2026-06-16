@@ -36,7 +36,7 @@ MinVersion=10.0
 Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Files]
-Source: "xbshlext.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "out\bin\x64\Release\xbshlext.dll"; DestDir: "{app}"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{win}\explorer.exe"; Parameters: "shell:::{{DB15FEDD-96B8-4DA9-97E0-7E5CCA05CC44}}"; IconFilename: "{app}\xbshlext.dll"; IconIndex: 13

@@ -32,6 +32,33 @@ Abstract:
 #define MAXULONG ((ULONG)0xFFFFFFFFUL)
 #endif
 
+//
+// imagebld only ever processes 32-bit (PE32 / IMAGE_FILE_MACHINE_I386) Xbox
+// executables.  When this tool is built as a 64-bit binary the unsuffixed
+// IMAGE_* PE types and helper macros resolve to their 64-bit variants, which
+// have a different on-disk layout and would misparse a 32-bit input image.
+// Pin them to the 32-bit variants so the PE parsing logic is identical
+// regardless of the architecture imagebld itself is compiled for.
+//
+
+#ifdef _WIN64
+#define IMAGE_NT_HEADERS            IMAGE_NT_HEADERS32
+#define PIMAGE_NT_HEADERS           PIMAGE_NT_HEADERS32
+#define IMAGE_OPTIONAL_HEADER       IMAGE_OPTIONAL_HEADER32
+#define PIMAGE_OPTIONAL_HEADER      PIMAGE_OPTIONAL_HEADER32
+#define IMAGE_THUNK_DATA            IMAGE_THUNK_DATA32
+#define PIMAGE_THUNK_DATA           PIMAGE_THUNK_DATA32
+#define IMAGE_TLS_DIRECTORY         IMAGE_TLS_DIRECTORY32
+#define PIMAGE_TLS_DIRECTORY        PIMAGE_TLS_DIRECTORY32
+
+#undef IMAGE_NT_OPTIONAL_HDR_MAGIC
+#define IMAGE_NT_OPTIONAL_HDR_MAGIC IMAGE_NT_OPTIONAL_HDR32_MAGIC
+#undef IMAGE_SNAP_BY_ORDINAL
+#define IMAGE_SNAP_BY_ORDINAL       IMAGE_SNAP_BY_ORDINAL32
+#undef IMAGE_ORDINAL
+#define IMAGE_ORDINAL               IMAGE_ORDINAL32
+#endif // _WIN64
+
 #include "imagebld_win32.h"
 #include <xbeimage.h>
 #include <cklibver.h>
@@ -106,7 +133,7 @@ typedef struct _IMGB_INSERTFILE {
 
 typedef struct _IMGB_GENERIC_HEADER {
     LIST_ENTRY HeadersListEntry;
-    PVOID VirtualAddress;
+    XBEVA VirtualAddress;
     ULONG VirtualSize;
     virtual VOID Write() = 0;
 } IMGB_GENERIC_HEADER, *PIMGB_GENERIC_HEADER;

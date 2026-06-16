@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{DB15FEDD-96B8-4DA9-97E0-7E5CCA05CC45}</ProjectGuid>
+    <RootNamespace>xbshlext</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(MSBuildThisFileDirectory)..\XboxNeighborhood.props" />
+  <Import Project="$(MSBuildThisFileDirectory)xbshlext.props" />
+  <PropertyGroup>
+    <TargetName>xbshlext</TargetName>
+    <OutDir>$(BinOutDir)</OutDir>
+    <IntDir>$(IntRoot)xbshlext\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)atlimp.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)attrib.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)console.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)CXboxStream.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)dataobj.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)debug.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)delete.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)details.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)dialogs.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)drawpie.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)drop.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)icon.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)menu.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)objectwithsite.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)pidl.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)prop.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)shellfolder.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)utils.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)view.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)visit.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)wizard.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)xbfolder.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)xbshlext2.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)generated\xbshlext.c">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xbshlext_guids.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(SrcRoot)\common\xdk_shellfolder_view.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(SrcRoot)\common\xdk_shellfolder2.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(MSBuildThisFileDirectory)xbshlext.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xboxdbg\xbdbgs.vcxproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

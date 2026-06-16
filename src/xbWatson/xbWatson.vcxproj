@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C8D9E0F1-A2B3-4567-2345-789012345678}</ProjectGuid>
+    <RootNamespace>xbwatson</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <Import Project="$(MSBuildThisFileDirectory)..\XboxNeighborhood.props" />
+  <Import Project="$(MSBuildThisFileDirectory)xbWatson.props" />
+  <PropertyGroup>
+    <TargetName>xbWatson</TargetName>
+    <OutDir>$(BinOutDir)</OutDir>
+    <IntDir>$(IntRoot)xbWatson\$(Platform)\$(Configuration)\</IntDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StdAfx.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)xbWatson.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GetBreakInfo.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HandleAssert.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HandleBreakpoint.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HandleException.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)HandleRIP.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)InitDM.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Output.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ReadWriteBreakInfo.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SaveLogFile.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)XboxNotify.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(MSBuildThisFileDirectory)xbWatson.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\xboxdbg\xbdbgs.vcxproj">
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

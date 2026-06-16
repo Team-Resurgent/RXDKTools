@@ -428,7 +428,7 @@ ImgbProcessInputImportDescriptors(
 
         if (_stricmp(ImageName, "xboxkrnl.exe") == 0) {
             ImgbXbeImageHeader->ImageHeader.XboxKernelThunkData =
-                (PIMAGE_THUNK_DATA)ImportDescriptor->FirstThunk;
+                ImportDescriptor->FirstThunk;
         } else {
             NumberOfNonKernelImports++;
             SizeOfNonKernelImageNames += (strlen(ImageName) + sizeof(UCHAR)) * sizeof(WCHAR);
@@ -544,7 +544,7 @@ ImgbProcessInputTlsDirectory(
         // Store the RVA of the TLS directory in the image header.
         //
 
-        ImgbXbeImageHeader->ImageHeader.TlsDirectory = (PIMAGE_TLS_DIRECTORY)
+        ImgbXbeImageHeader->ImageHeader.TlsDirectory =
             ImgbNtHeader->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_TLS].VirtualAddress;
 
         //
@@ -1041,7 +1041,7 @@ ImgbLayoutOutputHeaders(
             //
 
             GenericHeader->VirtualAddress =
-                (LPBYTE)XBEIMAGE_STANDARD_BASE_ADDRESS + SizeOfHeaders;
+                XBEIMAGE_STANDARD_BASE_ADDRESS + SizeOfHeaders;
 
             //
             // Add this header's contribution to the total header size.
@@ -1088,54 +1088,54 @@ ImgbLayoutOutputHeaders(
     //
 
     if (ImgbXbeImageHeader->CertificateHeader.VirtualSize != 0) {
-        ImgbXbeImageHeader->ImageHeader.Certificate = (PXBEIMAGE_CERTIFICATE)
+        ImgbXbeImageHeader->ImageHeader.Certificate =
             ImgbXbeImageHeader->CertificateHeader.VirtualAddress;
     }
 
     if (ImgbXbeImageHeader->SectionHeaders.VirtualSize != 0) {
         ImgbXbeImageHeader->ImageHeader.SectionHeaders =
-            (PXBEIMAGE_SECTION)ImgbXbeImageHeader->SectionHeaders.VirtualAddress;
+            ImgbXbeImageHeader->SectionHeaders.VirtualAddress;
     }
 
     if (ImgbXbeImageHeader->ImportDescriptorHeader.VirtualSize != 0) {
         ImgbXbeImageHeader->ImageHeader.ImportDirectory =
-            (PXBEIMAGE_IMPORT_DESCRIPTOR)ImgbXbeImageHeader->ImportDescriptorHeader.VirtualAddress;
+            ImgbXbeImageHeader->ImportDescriptorHeader.VirtualAddress;
     }
 
     if (ImgbXbeImageHeader->LibraryVersionHeader.VirtualSize != 0) {
 
         ImgbXbeImageHeader->ImageHeader.LibraryVersions =
-            (PXBEIMAGE_LIBRARY_VERSION)ImgbXbeImageHeader->LibraryVersionHeader.VirtualAddress;
+            ImgbXbeImageHeader->LibraryVersionHeader.VirtualAddress;
 
         if (ImgbXbeImageHeader->LibraryVersionHeader.XboxKernelOffset != MAXULONG) {
-            ImgbXbeImageHeader->ImageHeader.XboxKernelLibraryVersion = (PXBEIMAGE_LIBRARY_VERSION)
-                ((ULONG)ImgbXbeImageHeader->LibraryVersionHeader.VirtualAddress +
-                ImgbXbeImageHeader->LibraryVersionHeader.XboxKernelOffset);
+            ImgbXbeImageHeader->ImageHeader.XboxKernelLibraryVersion =
+                ImgbXbeImageHeader->LibraryVersionHeader.VirtualAddress +
+                ImgbXbeImageHeader->LibraryVersionHeader.XboxKernelOffset;
         }
 
         if (ImgbXbeImageHeader->LibraryVersionHeader.XapiOffset != MAXULONG) {
-            ImgbXbeImageHeader->ImageHeader.XapiLibraryVersion = (PXBEIMAGE_LIBRARY_VERSION)
-                ((ULONG)ImgbXbeImageHeader->LibraryVersionHeader.VirtualAddress +
-                ImgbXbeImageHeader->LibraryVersionHeader.XapiOffset);
+            ImgbXbeImageHeader->ImageHeader.XapiLibraryVersion =
+                ImgbXbeImageHeader->LibraryVersionHeader.VirtualAddress +
+                ImgbXbeImageHeader->LibraryVersionHeader.XapiOffset;
         }
     }
 
     if (ImgbXbeImageHeader->DebugPathsHeader.VirtualSize != 0) {
 
-        ImgbXbeImageHeader->ImageHeader.DebugUnicodeFileName = (PWCHAR)
-            (PWCHAR)ImgbXbeImageHeader->DebugPathsHeader.VirtualAddress;
+        ImgbXbeImageHeader->ImageHeader.DebugUnicodeFileName =
+            ImgbXbeImageHeader->DebugPathsHeader.VirtualAddress;
 
-        ImgbXbeImageHeader->ImageHeader.DebugPathName = (PUCHAR)
-            ((ULONG)ImgbXbeImageHeader->DebugPathsHeader.VirtualAddress +
-            (strlen(ImgbInputFileFilePart) + 1) * sizeof(WCHAR));
+        ImgbXbeImageHeader->ImageHeader.DebugPathName =
+            ImgbXbeImageHeader->DebugPathsHeader.VirtualAddress +
+            (ULONG)((strlen(ImgbInputFileFilePart) + 1) * sizeof(WCHAR));
 
         ImgbXbeImageHeader->ImageHeader.DebugFileName =
             ImgbXbeImageHeader->ImageHeader.DebugPathName +
-            (ImgbInputFileFilePart - ImgbInputFileFullPath);
+            (ULONG)(ImgbInputFileFilePart - ImgbInputFileFullPath);
     }
 
     if (ImgbXbeImageHeader->MicrosoftLogoHeader.VirtualSize != 0) {
-        ImgbXbeImageHeader->ImageHeader.MicrosoftLogo = (PVOID)
+        ImgbXbeImageHeader->ImageHeader.MicrosoftLogo =
             ImgbXbeImageHeader->MicrosoftLogoHeader.VirtualAddress;
         ImgbXbeImageHeader->ImageHeader.SizeOfMicrosoftLogo =
             ImgbXbeImageHeader->MicrosoftLogoHeader.VirtualSize;
@@ -1209,9 +1209,9 @@ ImgbAddPEHeader(
     //
 
     ImgbXbeImageHeader->ImageHeader.NtBaseOfDll =
-        ImgbXbeImageHeader->PEHeaderHeader.VirtualAddress = (PVOID)
-        (XBEIMAGE_STANDARD_BASE_ADDRESS + AdjustedSizeOfHeaders -
-        SizeOfNtHeaders);
+        ImgbXbeImageHeader->PEHeaderHeader.VirtualAddress =
+        XBEIMAGE_STANDARD_BASE_ADDRESS + AdjustedSizeOfHeaders -
+        SizeOfNtHeaders;
 }
 
 VOID
@@ -1262,19 +1262,19 @@ ImgbRelocateImageAfterHeaders(
     //
 
     if (ImgbXbeImageHeader->ImageHeader.AddressOfEntryPoint != NULL) {
-        ImgbXbeImageHeader->ImageHeader.AddressOfEntryPoint = (PXBEIMAGE_ENTRY_POINT)
-            ((ULONG)ImgbXbeImageHeader->ImageHeader.AddressOfEntryPoint + NewBaseAddress);
+        ImgbXbeImageHeader->ImageHeader.AddressOfEntryPoint =
+            ImgbXbeImageHeader->ImageHeader.AddressOfEntryPoint + NewBaseAddress;
     }
 
     if (ImgbXbeImageHeader->ImageHeader.XboxKernelThunkData != NULL) {
-        ImgbXbeImageHeader->ImageHeader.XboxKernelThunkData = (PIMAGE_THUNK_DATA)
-            ((ULONG)ImgbXbeImageHeader->ImageHeader.XboxKernelThunkData + NewBaseAddress);
+        ImgbXbeImageHeader->ImageHeader.XboxKernelThunkData =
+            ImgbXbeImageHeader->ImageHeader.XboxKernelThunkData + NewBaseAddress;
     }
 
     if (ImgbXbeImageHeader->ImageHeader.TlsDirectory != NULL) {
 
-        ImgbXbeImageHeader->ImageHeader.TlsDirectory = (PIMAGE_TLS_DIRECTORY)
-            ((ULONG)ImgbXbeImageHeader->ImageHeader.TlsDirectory + NewBaseAddress);
+        ImgbXbeImageHeader->ImageHeader.TlsDirectory =
+            ImgbXbeImageHeader->ImageHeader.TlsDirectory + NewBaseAddress;
 
         //
         // Now that the image has been relocated, go back and change the
@@ -1597,10 +1597,10 @@ _IMGB_XBEIMAGE_IMPORT_DESCRIPTOR_HEADER::Write(
             ImgbWriteOutputFile(UnicodeImageName, wcslen(UnicodeImageName) * sizeof(WCHAR));
 
             XbeImportDescriptor.ImageThunkData =
-                (PIMAGE_THUNK_DATA)(ImportDescriptor->FirstThunk +
-                (ULONG)ImgbXbeImageHeader->NewBaseAddress);
-            XbeImportDescriptor.ImageName = (PWCHAR)(ImportDirectoryNameByteOffset +
-                XBEIMAGE_STANDARD_BASE_ADDRESS);
+                ImportDescriptor->FirstThunk +
+                ImgbXbeImageHeader->NewBaseAddress;
+            XbeImportDescriptor.ImageName = ImportDirectoryNameByteOffset +
+                XBEIMAGE_STANDARD_BASE_ADDRESS;
 
             ImgbSeekByteOutputFile(ImportDirectoryByteOffset);
             ImgbWriteOutputFile(&XbeImportDescriptor, sizeof(XBEIMAGE_IMPORT_DESCRIPTOR));
@@ -1674,8 +1674,8 @@ ImgbCheckForReadOnlyPage(
         if ((Section->VirtualSize != 0) &&
             ((Section->SectionFlags & XBEIMAGE_SECTION_WRITEABLE) != 0)) {
 
-            StartingAddress = (ULONG)PAGE_ALIGN(Section->VirtualAddress);
-            EndingAddress = (ULONG)PAGE_ALIGN(Section->VirtualAddress +
+            StartingAddress = (ULONG)(ULONG_PTR)PAGE_ALIGN(Section->VirtualAddress);
+            EndingAddress = (ULONG)(ULONG_PTR)PAGE_ALIGN(Section->VirtualAddress +
                 Section->VirtualSize + PAGE_SIZE - 1);
 
             if (StartingAddress <= VirtualAddress && VirtualAddress < EndingAddress) {
@@ -1950,7 +1950,7 @@ _IMGB_XBEIMAGE_SECTION_HEADERS::Write(
     // Compute the first pointer to the shared page reference counters.
     //
 
-    SharedReferenceCount = (PUSHORT)((ULONG)ImgbXbeImageHeader->SectionHeaders.VirtualAddress +
+    SharedReferenceCount = (PUSHORT)(ULONG_PTR)(ImgbXbeImageHeader->SectionHeaders.VirtualAddress +
         ImgbXbeImageHeader->ImageHeader.NumberOfSections * sizeof(XBEIMAGE_SECTION));
     EndingSharedReferenceCount = SharedReferenceCount +
         ImgbXbeImageHeader->SectionHeaders.NumberOfSharedPageReferenceCounts;
@@ -2005,8 +2005,8 @@ _IMGB_XBEIMAGE_SECTION_HEADERS::Write(
             SectionHeader->Misc.VirtualSize);
         XbeSection.PointerToRawData = ImageFileByteOffsets[CurrentSection];
         XbeSection.SizeOfRawData = SectionHeader->SizeOfRawData;
-        XbeSection.SectionName = (PUCHAR)(SectionHeaderNameByteOffset +
-            XBEIMAGE_STANDARD_BASE_ADDRESS);
+        XbeSection.SectionName = SectionHeaderNameByteOffset +
+            XBEIMAGE_STANDARD_BASE_ADDRESS;
         XbeSection.SectionReferenceCount = 0;
 
         //
@@ -2039,14 +2039,14 @@ _IMGB_XBEIMAGE_SECTION_HEADERS::Write(
             SharedReferenceCount++;
         }
 
-        XbeSection.HeadSharedPageReferenceCount = SharedReferenceCount;
+        XbeSection.HeadSharedPageReferenceCount = (XBEVA)(ULONG_PTR)SharedReferenceCount;
 
         if (PAGE_ALIGN(XbeSection.VirtualAddress) !=
             PAGE_ALIGN(XbeSection.VirtualAddress + XbeSection.VirtualSize - 1)) {
             SharedReferenceCount++;
         }
 
-        XbeSection.TailSharedPageReferenceCount = SharedReferenceCount;
+        XbeSection.TailSharedPageReferenceCount = (XBEVA)(ULONG_PTR)SharedReferenceCount;
 
         FirstSharedReferenceCount = FALSE;
         LastEndingVirtualAddress = XbeSection.VirtualAddress +
@@ -2096,8 +2096,8 @@ _IMGB_XBEIMAGE_SECTION_HEADERS::Write(
         XbeSection.VirtualSize = InsertFileLink->FileSize;
         XbeSection.PointerToRawData = InsertFileLink->FileByteOffset;
         XbeSection.SizeOfRawData = InsertFileLink->FileSize;
-        XbeSection.SectionName = (PUCHAR)(SectionHeaderNameByteOffset +
-            XBEIMAGE_STANDARD_BASE_ADDRESS);
+        XbeSection.SectionName = SectionHeaderNameByteOffset +
+            XBEIMAGE_STANDARD_BASE_ADDRESS;
         XbeSection.SectionReferenceCount = 0;
 
         //
@@ -2124,14 +2124,14 @@ _IMGB_XBEIMAGE_SECTION_HEADERS::Write(
             SharedReferenceCount++;
         }
 
-        XbeSection.HeadSharedPageReferenceCount = SharedReferenceCount;
+        XbeSection.HeadSharedPageReferenceCount = (XBEVA)(ULONG_PTR)SharedReferenceCount;
 
         if (PAGE_ALIGN(XbeSection.VirtualAddress) !=
             PAGE_ALIGN(XbeSection.VirtualAddress + XbeSection.VirtualSize - 1)) {
             SharedReferenceCount++;
         }
 
-        XbeSection.TailSharedPageReferenceCount = SharedReferenceCount;
+        XbeSection.TailSharedPageReferenceCount = (XBEVA)(ULONG_PTR)SharedReferenceCount;
 
         FirstSharedReferenceCount = FALSE;
         LastEndingVirtualAddress = XbeSection.VirtualAddress +
@@ -2329,11 +2329,11 @@ ImgbBuildOutputFile(
     InitializeListHead(&ImgbXbeImageHeader->HeadersListHead);
 
     ImgbXbeImageHeader->ImageHeader.Signature = XBEIMAGE_SIGNATURE;
-    ImgbXbeImageHeader->ImageHeader.BaseAddress = (PVOID)XBEIMAGE_STANDARD_BASE_ADDRESS;
+    ImgbXbeImageHeader->ImageHeader.BaseAddress = XBEIMAGE_STANDARD_BASE_ADDRESS;
     time((time_t *)&ImgbXbeImageHeader->ImageHeader.TimeDateStamp);
     ImgbXbeImageHeader->ImageHeader.SizeOfImageHeader = sizeof(XBEIMAGE_HEADER);
     ImgbXbeImageHeader->ImageHeader.AddressOfEntryPoint =
-        (PXBEIMAGE_ENTRY_POINT)ImgbNtHeader->OptionalHeader.AddressOfEntryPoint;
+        ImgbNtHeader->OptionalHeader.AddressOfEntryPoint;
     ImgbXbeImageHeader->ImageHeader.SizeOfStackCommit = (ImgbSizeOfStack != 0) ? ImgbSizeOfStack :
         ImgbNtHeader->OptionalHeader.SizeOfStackCommit;
     ImgbXbeImageHeader->ImageHeader.SizeOfHeapReserve = ImgbNtHeader->OptionalHeader.SizeOfHeapReserve;

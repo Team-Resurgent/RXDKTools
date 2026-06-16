@@ -1,0 +1,85 @@
+#ifndef _XBOX86CTX_H
+#define _XBOX86CTX_H
+
+/*
+ * i386 CONTEXT layout for Xbox debug APIs on x64 Windows hosts.
+ * The console CPU is x86; host-side CONTEXT from winnt.h is amd64.
+ */
+#ifdef _WIN64
+
+#ifndef SIZE_OF_80387_REGISTERS
+#define SIZE_OF_80387_REGISTERS 80
+#endif
+
+#ifndef MAXIMUM_SUPPORTED_EXTENSION
+#define MAXIMUM_SUPPORTED_EXTENSION 512
+#endif
+
+typedef struct _XBOX86_FLOATING_SAVE_AREA {
+    DWORD ControlWord;
+    DWORD StatusWord;
+    DWORD TagWord;
+    DWORD ErrorOffset;
+    DWORD ErrorSelector;
+    DWORD DataOffset;
+    DWORD DataSelector;
+    BYTE  RegisterArea[SIZE_OF_80387_REGISTERS];
+    DWORD Cr0NpxState;
+} XBOX86_FLOATING_SAVE_AREA, *PXBOX86_FLOATING_SAVE_AREA;
+
+typedef struct _XBOX86_CONTEXT {
+    DWORD ContextFlags;
+    DWORD Dr0;
+    DWORD Dr1;
+    DWORD Dr2;
+    DWORD Dr3;
+    DWORD Dr6;
+    DWORD Dr7;
+    XBOX86_FLOATING_SAVE_AREA FloatSave;
+    DWORD SegGs;
+    DWORD SegFs;
+    DWORD SegEs;
+    DWORD SegDs;
+    DWORD Edi;
+    DWORD Esi;
+    DWORD Ebx;
+    DWORD Edx;
+    DWORD Ecx;
+    DWORD Eax;
+    DWORD Ebp;
+    DWORD Eip;
+    DWORD SegCs;
+    DWORD EFlags;
+    DWORD Esp;
+    DWORD SegSs;
+    BYTE  ExtendedRegisters[MAXIMUM_SUPPORTED_EXTENSION];
+} XBOX86_CONTEXT, *PXBOX86_CONTEXT;
+
+#define CONTEXT_i386 0x00010000L
+#undef CONTEXT_CONTROL
+#undef CONTEXT_INTEGER
+#undef CONTEXT_SEGMENTS
+#undef CONTEXT_FLOATING_POINT
+#undef CONTEXT_DEBUG_REGISTERS
+#undef CONTEXT_EXTENDED_REGISTERS
+#undef CONTEXT_FULL
+#define CONTEXT_CONTROL (CONTEXT_i386 | 0x00000001L)
+#define CONTEXT_INTEGER (CONTEXT_i386 | 0x00000002L)
+#define CONTEXT_SEGMENTS (CONTEXT_i386 | 0x00000004L)
+#define CONTEXT_FLOATING_POINT (CONTEXT_i386 | 0x00000008L)
+#define CONTEXT_DEBUG_REGISTERS (CONTEXT_i386 | 0x00000010L)
+#define CONTEXT_EXTENDED_REGISTERS (CONTEXT_i386 | 0x00000020L)
+#define CONTEXT_FULL (CONTEXT_CONTROL | CONTEXT_INTEGER | CONTEXT_SEGMENTS)
+
+typedef XBOX86_CONTEXT XBDM_CONTEXT;
+typedef PXBOX86_CONTEXT PXBDM_CONTEXT;
+
+#else
+
+#include <windows.h>
+typedef CONTEXT XBDM_CONTEXT;
+typedef PCONTEXT PXBDM_CONTEXT;
+
+#endif
+
+#endif

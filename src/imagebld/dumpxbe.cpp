@@ -69,7 +69,7 @@ ImgbGetDumpCertificateKeyString(
 LPVOID
 ImgbGetDumpDataFromVirtualAddress(
     PXBEIMAGE_HEADER ImageHeader,
-    PVOID VirtualAddress,
+    XBEVA VirtualAddress,
     ULONG NumberOfBytes
     )
 {
@@ -299,7 +299,7 @@ ImgbDumpXbeImportDirectories(
     PXBEIMAGE_HEADER ImageHeader
     )
 {
-    PXBEIMAGE_IMPORT_DESCRIPTOR RawImportDescriptor;
+    XBEVA RawImportDescriptor;
     PXBEIMAGE_IMPORT_DESCRIPTOR ImportDescriptor;
     PWCHAR ImageName;
 
@@ -342,7 +342,7 @@ ImgbDumpXbeImportDirectories(
 
         printf("%s%ws\n", ImgbDumpPadding, ImageName);
 
-        RawImportDescriptor++;
+        RawImportDescriptor += sizeof(XBEIMAGE_IMPORT_DESCRIPTOR);
     }
 
     printf("\n");
