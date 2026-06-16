@@ -3,8 +3,6 @@
   <PropertyGroup>
     <RepoRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</RepoRoot>
     <SrcRoot>$(RepoRoot)src\</SrcRoot>
-    <ThirdPartyRoot>$([System.IO.Path]::Combine('$(RepoRoot)', 'thirdparty'))\</ThirdPartyRoot>
-    <Rsa32LibDir>$([System.IO.Path]::Combine('$(ThirdPartyRoot)', 'rsa32'))\</Rsa32LibDir>
     <OutRoot>$(RepoRoot)out\</OutRoot>
     <LibOutDir>$(OutRoot)lib\$(Platform)\$(Configuration)\</LibOutDir>
     <BinOutDir>$(OutRoot)bin\$(Platform)\$(Configuration)\</BinOutDir>

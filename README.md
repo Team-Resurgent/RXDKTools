@@ -43,10 +43,8 @@ Requires Visual Studio 2022 with **Desktop development with C++** (v143 toolset)
 
 1. Open **`XboxTools.sln`** in VS2022 and build **Release | x64**:
 
-   - All CLI tools, `xbshlext.dll`, and `xboxdbg-bridge.exe` → `out/bin/x64/Release/`
-   - **`imagebld.exe`** still builds as **Win32** (needs `rsa32.lib`) and is staged to `tools/imagebld.exe`
-
-   Use **Release | Win32** only when rebuilding `imagebld` alone.
+   - All binaries → `out/bin/x64/Release/` (including `imagebld.exe`, `xbshlext.dll`, `xboxdbg-bridge.exe`, CLI tools)
+   - Static libraries → `out/lib/x64/Release/` (`xbdbgs.lib`, `xbfile.lib`, `xrsa.lib`)
 
 ### Projects (each `.vcxproj` lives alongside its sources under `src/`)
 
@@ -57,15 +55,15 @@ Requires Visual Studio 2022 with **Desktop development with C++** (v143 toolset)
 | `xbfile` | `out/lib/.../xbfile.lib` | Shared file helpers (tools only) |
 | `xbcp`, `xbdir`, `xbecopy`, `xbmkdir` | `out/bin/x64/Release/*.exe` | `xbdbgs.lib` + `xbfile.lib` |
 | `xbox-launch`, `xbWatson` | `out/bin/x64/Release/*.exe` | `xbdbgs.lib` (includes notifications) |
-| `imagebld` | `tools/imagebld.exe` (Win32) | RSA signing (`rsa32.lib` in `thirdparty/rsa32/`) |
+| `imagebld` | `out/bin/x64/Release/imagebld.exe` | `xrsa.lib` (source-built RSA) |
 | `xboxdbg_bridge` | `out/bin/x64/Release/xboxdbg-bridge.exe` | `xbdbgs.lib` + `dbghelp.lib` |
 
-All tools link **`xbdbgs.lib`** statically. **`imagebld`** is the only Win32 target (32-bit RSA library). Everything else is x64, including notification support in `xbdbgs`.
+All tools link **`xbdbgs.lib`** statically. Everything builds as **x64**, including `imagebld` and notification support in `xbdbgs`.
 
 ### imagebld
 
-- **`imagebld`** — Xbox Image File Builder (`.xbe` packaging). Also staged to `tools/imagebld.exe`.
-- Only **`imagebld`** links `rsa32.lib` (place `thirdparty/rsa32/rsa32.lib`, vendored from RXDK-Libs `prebuilt/tools/`).
+- **`imagebld`** — Xbox Image File Builder (`.xbe` packaging).
+- Links **`xrsa.lib`** (built from `src/xrsa/`; replaces the old prebuilt `rsa32.lib`).
 
 ## Build the installer
 
@@ -81,7 +79,7 @@ From the repo root:
 build-installer.cmd
 ```
 
-The setup executable is written to `output\XboxNeighborhood-Setup.exe`.
+The setup executable is written to `out\bin\x64\Release\XboxNeighborhood-Setup.exe`.
 
 ## Requirements
 

@@ -39,5 +39,5 @@ if ($LASTEXITCODE -ne 0) {
     throw "ISCC failed (exit $LASTEXITCODE)"
 }
 
-$output = Join-Path $PSScriptRoot 'output\XboxNeighborhood-Setup.exe'
+$output = Join-Path $PSScriptRoot 'out\bin\x64\Release\XboxNeighborhood-Setup.exe'
 Write-Host "Installer: $output" -ForegroundColor Green
