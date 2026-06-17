@@ -10,110 +10,139 @@
         Title="RXDK Neighborhood"
         Width="1100"
         Height="700"
+        MinWidth="900"
+        MinHeight="560"
+        TransparencyLevelHint="Mica, AcrylicBlur"
+        Background="Transparent"
         KeyDown="OnWindowKeyDown">
-  <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="240,*">
-    <Border Grid.Row="0" Grid.ColumnSpan="2" Padding="12" BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="0,0,0,1">
-      <StackPanel Spacing="8">
-        <StackPanel Orientation="Horizontal" Spacing="8">
-          <TextBlock Text="RXDK Neighborhood" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center" />
-          <Button x:Name="RefreshButton" Content="Refresh" Click="OnRefreshClick" />
-          <Button x:Name="UpButton" Content="Up" Click="OnUpClick" />
-          <Button x:Name="AddConsoleButton" Content="Add Console" Click="OnAddConsoleClick" />
+  <Panel Margin="10">
+    <Grid RowDefinitions="Auto,*,Auto" ColumnDefinitions="252,*" RowSpacing="10" ColumnSpacing="10">
+      <Border Grid.Row="0" Grid.ColumnSpan="2" Classes="glass-panel-elevated" Padding="14,12">
+        <StackPanel Spacing="10">
+          <DockPanel>
+            <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Spacing="8">
+              <Button x:Name="RefreshButton" Classes="glass" Content="Refresh" Click="OnRefreshClick" />
+              <Button x:Name="UpButton" Classes="glass" Content="Up" Click="OnUpClick" />
+              <Button x:Name="AddConsoleButton" Classes="glass-accent" Content="Add Console" Click="OnAddConsoleClick" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="10" VerticalAlignment="Center">
+              <Image Source="avares://RXDKNeighborhood/Assets/xbox.ico" Width="28" Height="28" />
+              <TextBlock Classes="app-title" Text="RXDK Neighborhood" VerticalAlignment="Center" />
+            </StackPanel>
+          </DockPanel>
+          <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+            <StackPanel Orientation="Horizontal" Spacing="6">
+              <Button Classes="glass" Content="Properties" Click="OnPropertiesClick" />
+              <Button Classes="glass" Content="Cut" Click="OnCutClick" />
+              <Button Classes="glass" Content="Copy" Click="OnCopyClick" />
+              <Button Classes="glass" Content="Paste" Click="OnPasteClick" />
+              <Button Classes="glass" Content="Delete" Click="OnDeleteClick" />
+              <Button Classes="glass" Content="Rename" Click="OnRenameClick" />
+              <Button Classes="glass" Content="New Folder" Click="OnNewFolderClick" />
+              <Button Classes="glass" Content="Export to PC" Click="OnExportClick" />
+              <Button Classes="glass" Content="Launch" Click="OnLaunchClick" />
+            </StackPanel>
+          </ScrollViewer>
         </StackPanel>
-        <StackPanel Orientation="Horizontal" Spacing="6">
-          <Button Content="Properties" Click="OnPropertiesClick" />
-          <Button Content="Cut" Click="OnCutClick" />
-          <Button Content="Copy" Click="OnCopyClick" />
-          <Button Content="Paste" Click="OnPasteClick" />
-          <Button Content="Delete" Click="OnDeleteClick" />
-          <Button Content="Rename" Click="OnRenameClick" />
-          <Button Content="New Folder" Click="OnNewFolderClick" />
-          <Button Content="Export to PC" Click="OnExportClick" />
-          <Button Content="Launch" Click="OnLaunchClick" />
-        </StackPanel>
-      </StackPanel>
-    </Border>
+      </Border>
 
-    <Border Grid.Row="1" Grid.Column="0" BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="0,0,1,0">
-      <DockPanel>
-        <TextBlock DockPanel.Dock="Top" Margin="12,12,12,8" Text="Xbox Neighborhood" FontWeight="SemiBold" />
-        <TreeView x:Name="NavTree" Margin="8" SelectionChanged="OnNavTreeSelectionChanged">
-          <TreeView.ItemTemplate>
-            <TreeDataTemplate ItemsSource="{Binding Children}" DataType="vm:NavTreeItemViewModel">
-              <StackPanel Orientation="Horizontal" Spacing="6">
-                <Image Source="{Binding Icon}" Width="16" Height="16" />
-                <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
-              </StackPanel>
-            </TreeDataTemplate>
-          </TreeView.ItemTemplate>
-          <TreeView.ContextMenu>
-            <ContextMenu>
-              <MenuItem Header="Properties" Click="OnConsolePropertiesClick" />
-              <MenuItem Header="Security..." Click="OnConsoleSecurityClick" />
-              <Separator />
-              <MenuItem Header="Set Default" Click="OnSetDefaultConsoleClick" />
-              <MenuItem Header="Remove Console" Click="OnRemoveConsoleClick" />
-              <Separator />
-              <MenuItem Header="Warm Reboot" Click="OnConsoleRebootWarmClick" />
-              <MenuItem Header="Cold Reboot" Click="OnConsoleRebootColdClick" />
-              <MenuItem Header="Reboot Same Title" Click="OnConsoleRebootSameClick" />
-              <MenuItem Header="Capture Screenshot..." Click="OnConsoleScreenshotClick" />
-            </ContextMenu>
-          </TreeView.ContextMenu>
-        </TreeView>
-      </DockPanel>
-    </Border>
-
-    <Grid Grid.Row="1" Grid.Column="1" RowDefinitions="Auto,*" Margin="12">
-      <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,8">
-        <TextBlock Text="Location:" VerticalAlignment="Center" Opacity="0.8" />
-        <TextBlock x:Name="PathText" VerticalAlignment="Center" FontWeight="SemiBold" />
-      </StackPanel>
-      <Border x:Name="FileDropTarget" Grid.Row="1" DragDrop.AllowDrop="True">
-      <DataGrid x:Name="FileGrid"
-                Grid.Row="1"
-                x:DataType="vm:FileRowViewModel"
-                IsReadOnly="True"
-                AutoGenerateColumns="False"
-                CanUserResizeColumns="True"
-                SelectionMode="Extended"
-                DoubleTapped="OnFileDoubleTapped">
-        <DataGrid.ContextMenu>
-          <ContextMenu>
-            <MenuItem Header="Properties" Click="OnPropertiesClick" />
-            <MenuItem Header="Cut" Click="OnCutClick" />
-            <MenuItem Header="Copy" Click="OnCopyClick" />
-            <MenuItem Header="Paste" Click="OnPasteClick" />
-            <Separator />
-            <MenuItem Header="Delete" Click="OnDeleteClick" />
-            <MenuItem Header="Rename" Click="OnRenameClick" />
-            <MenuItem Header="New Folder" Click="OnNewFolderClick" />
-            <Separator />
-            <MenuItem Header="Export to PC" Click="OnExportClick" />
-            <MenuItem Header="Launch" Click="OnLaunchClick" />
-          </ContextMenu>
-        </DataGrid.ContextMenu>
-        <DataGrid.Columns>
-          <DataGridTemplateColumn Header="Name" Width="*">
-            <DataGridTemplateColumn.CellTemplate>
-              <DataTemplate DataType="vm:FileRowViewModel">
-                <StackPanel Orientation="Horizontal" Spacing="6" VerticalAlignment="Center">
+      <Border Grid.Row="1" Grid.Column="0" Classes="glass-panel" Padding="10">
+        <DockPanel>
+          <TextBlock DockPanel.Dock="Top"
+                     Margin="4,2,4,10"
+                     Classes="section-title"
+                     Text="Xbox Neighborhood" />
+          <TreeView x:Name="NavTree" SelectionChanged="OnNavTreeSelectionChanged">
+            <TreeView.ItemTemplate>
+              <TreeDataTemplate ItemsSource="{Binding Children}" DataType="vm:NavTreeItemViewModel">
+                <StackPanel Orientation="Horizontal" Spacing="8">
                   <Image Source="{Binding Icon}" Width="16" Height="16" />
-                  <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                  <TextBlock Text="{Binding Title}" VerticalAlignment="Center" />
                 </StackPanel>
-              </DataTemplate>
-            </DataGridTemplateColumn.CellTemplate>
-          </DataGridTemplateColumn>
-          <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="120" />
-          <DataGridTextColumn Header="Size" Binding="{Binding SizeText}" Width="120" />
-          <DataGridTextColumn Header="Modified" Binding="{Binding ModifiedText}" Width="180" />
-        </DataGrid.Columns>
-      </DataGrid>
+              </TreeDataTemplate>
+            </TreeView.ItemTemplate>
+            <TreeView.ContextMenu>
+              <ContextMenu>
+                <MenuItem Header="Properties" Click="OnConsolePropertiesClick" />
+                <MenuItem Header="Security..." Click="OnConsoleSecurityClick" />
+                <Separator />
+                <MenuItem Header="Set Default" Click="OnSetDefaultConsoleClick" />
+                <MenuItem Header="Remove Console" Click="OnRemoveConsoleClick" />
+                <Separator />
+                <MenuItem Header="Warm Reboot" Click="OnConsoleRebootWarmClick" />
+                <MenuItem Header="Cold Reboot" Click="OnConsoleRebootColdClick" />
+                <MenuItem Header="Reboot Same Title" Click="OnConsoleRebootSameClick" />
+                <MenuItem Header="Capture Screenshot..." Click="OnConsoleScreenshotClick" />
+              </ContextMenu>
+            </TreeView.ContextMenu>
+          </TreeView>
+        </DockPanel>
+      </Border>
+
+      <Border Grid.Row="1" Grid.Column="1" Classes="glass-panel" Padding="14">
+        <Grid RowDefinitions="Auto,*">
+          <Border Grid.Row="0"
+                  Margin="0,0,0,10"
+                  Padding="10,8"
+                  CornerRadius="8"
+                  Background="{DynamicResource GlassAccentSoftBrush}"
+                  BorderBrush="{DynamicResource GlassAccentBrush}"
+                  BorderThickness="1">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+              <TextBlock Text="Location" VerticalAlignment="Center" Opacity="0.75" FontSize="12" />
+              <TextBlock x:Name="PathText" VerticalAlignment="Center" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+          </Border>
+          <Border x:Name="FileDropTarget"
+                  Grid.Row="1"
+                  CornerRadius="8"
+                  ClipToBounds="True"
+                  DragDrop.AllowDrop="True">
+            <DataGrid x:Name="FileGrid"
+                      x:DataType="vm:FileRowViewModel"
+                      IsReadOnly="True"
+                      AutoGenerateColumns="False"
+                      CanUserResizeColumns="True"
+                      SelectionMode="Extended"
+                      DoubleTapped="OnFileDoubleTapped">
+              <DataGrid.ContextMenu>
+                <ContextMenu>
+                  <MenuItem Header="Properties" Click="OnPropertiesClick" />
+                  <MenuItem Header="Cut" Click="OnCutClick" />
+                  <MenuItem Header="Copy" Click="OnCopyClick" />
+                  <MenuItem Header="Paste" Click="OnPasteClick" />
+                  <Separator />
+                  <MenuItem Header="Delete" Click="OnDeleteClick" />
+                  <MenuItem Header="Rename" Click="OnRenameClick" />
+                  <MenuItem Header="New Folder" Click="OnNewFolderClick" />
+                  <Separator />
+                  <MenuItem Header="Export to PC" Click="OnExportClick" />
+                  <MenuItem Header="Launch" Click="OnLaunchClick" />
+                </ContextMenu>
+              </DataGrid.ContextMenu>
+              <DataGrid.Columns>
+                <DataGridTemplateColumn Header="Name" Width="*">
+                  <DataGridTemplateColumn.CellTemplate>
+                    <DataTemplate DataType="vm:FileRowViewModel">
+                      <StackPanel Orientation="Horizontal" Spacing="8" VerticalAlignment="Center" Margin="2,0">
+                        <Image Source="{Binding Icon}" Width="16" Height="16" />
+                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                      </StackPanel>
+                    </DataTemplate>
+                  </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn Header="Type" Binding="{Binding Type}" Width="120" />
+                <DataGridTextColumn Header="Size" Binding="{Binding SizeText}" Width="120" />
+                <DataGridTextColumn Header="Modified" Binding="{Binding ModifiedText}" Width="180" />
+              </DataGrid.Columns>
+            </DataGrid>
+          </Border>
+        </Grid>
+      </Border>
+
+      <Border Grid.Row="2" Grid.ColumnSpan="2" Classes="glass-panel" Padding="12,8">
+        <TextBlock x:Name="StatusText" Opacity="0.85" FontSize="12" />
       </Border>
     </Grid>
-
-    <Border Grid.Row="2" Grid.ColumnSpan="2" Padding="10,6" BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="0,1,0,0">
-      <TextBlock x:Name="StatusText" Opacity="0.85" />
-    </Border>
-  </Grid>
+  </Panel>
 </Window>

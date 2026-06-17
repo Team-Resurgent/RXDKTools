@@ -5,14 +5,28 @@
         Height="560"
         MinWidth="420"
         MinHeight="420"
+        TransparencyLevelHint="Mica, AcrylicBlur"
+        Background="Transparent"
         WindowStartupLocation="CenterOwner">
-  <Grid RowDefinitions="*,Auto">
-    <TabControl x:Name="PropertyTabs" Grid.Row="0" Margin="8" VerticalAlignment="Stretch" />
-    <Border Grid.Row="1" Padding="10,6" BorderBrush="{DynamicResource SystemControlForegroundBaseMediumLowBrush}" BorderThickness="0,1,0,0">
-      <DockPanel>
-        <Button DockPanel.Dock="Right" Content="Close" Click="OnCloseClick" MinWidth="80" />
-        <TextBlock x:Name="StatusText" VerticalAlignment="Center" Opacity="0.85" />
-      </DockPanel>
+  <Panel Margin="10">
+    <Border Classes="glass-panel-elevated" Padding="4">
+      <Grid RowDefinitions="*,Auto">
+        <TabControl x:Name="PropertyTabs" Grid.Row="0" Margin="8,8,8,4" VerticalAlignment="Stretch" />
+        <Border Grid.Row="1"
+                Margin="8,0,8,8"
+                Padding="10,8"
+                CornerRadius="8"
+                Classes="glass-panel">
+          <DockPanel>
+            <Button DockPanel.Dock="Right"
+                    Classes="glass-accent"
+                    Content="Close"
+                    Click="OnCloseClick"
+                    MinWidth="88" />
+            <TextBlock x:Name="StatusText" VerticalAlignment="Center" Opacity="0.85" FontSize="12" />
+          </DockPanel>
+        </Border>
+      </Grid>
     </Border>
-  </Grid>
+  </Panel>
 </Window>

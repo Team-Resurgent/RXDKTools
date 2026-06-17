@@ -1,0 +1,28 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+  <ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary x:Key="Light">
+      <SolidColorBrush x:Key="GlassSurfaceBrush" Color="#C8FFFFFF" />
+      <SolidColorBrush x:Key="GlassSurfaceElevatedBrush" Color="#E6FFFFFF" />
+      <SolidColorBrush x:Key="GlassBorderBrush" Color="#55FFFFFF" />
+      <SolidColorBrush x:Key="GlassBorderSubtleBrush" Color="#33000000" />
+      <SolidColorBrush x:Key="GlassAccentBrush" Color="#107C10" />
+      <SolidColorBrush x:Key="GlassAccentSoftBrush" Color="#33107C10" />
+      <SolidColorBrush x:Key="GlassTitleBrush" Color="#107C10" />
+      <BoxShadows x:Key="GlassPanelShadow">0 8 24 0 #18000000</BoxShadows>
+      <BoxShadows x:Key="GlassPanelShadowHover">0 12 32 0 #22000000</BoxShadows>
+    </ResourceDictionary>
+    <ResourceDictionary x:Key="Dark">
+      <SolidColorBrush x:Key="GlassSurfaceBrush" Color="#99282828" />
+      <SolidColorBrush x:Key="GlassSurfaceElevatedBrush" Color="#BB323232" />
+      <SolidColorBrush x:Key="GlassBorderBrush" Color="#44FFFFFF" />
+      <SolidColorBrush x:Key="GlassBorderSubtleBrush" Color="#33FFFFFF" />
+      <SolidColorBrush x:Key="GlassAccentBrush" Color="#4CC764" />
+      <SolidColorBrush x:Key="GlassAccentSoftBrush" Color="#334CC764" />
+      <SolidColorBrush x:Key="GlassTitleBrush" Color="#6FD47A" />
+      <BoxShadows x:Key="GlassPanelShadow">0 8 28 0 #66000000</BoxShadows>
+      <BoxShadows x:Key="GlassPanelShadowHover">0 12 36 0 #88000000</BoxShadows>
+    </ResourceDictionary>
+  </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>

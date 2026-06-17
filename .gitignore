@@ -1,4 +1,6 @@
 .vs/
 out/
-obj/
+**/bin/
+**/obj/
+artifacts/
 *.vcxproj.user
