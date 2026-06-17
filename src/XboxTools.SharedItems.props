@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <!--
+    Surface shared/ headers and common sources in every project's Solution Explorer
+    tree.  Set SharedCommonCompile to a semicolon-separated list of basenames this
+    project compiles (e.g. xboxdbg_static_init.c); leave unset for browse-only.
+  -->
+  <ItemGroup>
+    <ClInclude Include="$(IncludeRoot)\cklibver.h">
+      <Link>shared\include\cklibver.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\ixbconn.h">
+      <Link>shared\include\ixbconn.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\xbeimage.h">
+      <Link>shared\include\xbeimage.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\xbox86ctx.h">
+      <Link>shared\include\xbox86ctx.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\xboxdbg.h">
+      <Link>shared\include\xboxdbg.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\xboxverp.h">
+      <Link>shared\include\xboxverp.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\crypto\benaloh.h">
+      <Link>shared\include\crypto\benaloh.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\crypto\des.h">
+      <Link>shared\include\crypto\des.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\crypto\GuidDef.h">
+      <Link>shared\include\crypto\GuidDef.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\crypto\modes.h">
+      <Link>shared\include\crypto\modes.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\crypto\rc4.h">
+      <Link>shared\include\crypto\rc4.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\crypto\rsa.h">
+      <Link>shared\include\crypto\rsa.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\crypto\rsa_fast.h">
+      <Link>shared\include\crypto\rsa_fast.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\crypto\rsa_math.h">
+      <Link>shared\include\crypto\rsa_math.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\crypto\sha.h">
+      <Link>shared\include\crypto\sha.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\crypto\tripldes.h">
+      <Link>shared\include\crypto\tripldes.h</Link>
+    </ClInclude>
+    <ClInclude Include="$(IncludeRoot)\crypto\xcrypt.h">
+      <Link>shared\include\crypto\xcrypt.h</Link>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(CommonRoot)\dm_error_shim.c">
+      <Link>shared\common\dm_error_shim.c</Link>
+      <ExcludedFromBuild Condition="!$([System.String]::Copy(';$(SharedCommonCompile);').Contains(';dm_error_shim.c;'))">true</ExcludedFromBuild>
+      <PrecompiledHeader Condition="$([System.String]::Copy(';$(SharedCommonCompile);').Contains(';dm_error_shim.c;'))">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(CommonRoot)\xboxdbg_static_init.c">
+      <Link>shared\common\xboxdbg_static_init.c</Link>
+      <ExcludedFromBuild Condition="!$([System.String]::Copy(';$(SharedCommonCompile);').Contains(';xboxdbg_static_init.c;'))">true</ExcludedFromBuild>
+      <PrecompiledHeader Condition="$([System.String]::Copy(';$(SharedCommonCompile);').Contains(';xboxdbg_static_init.c;'))">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(CommonRoot)\xdk_benaloh.c">
+      <Link>shared\common\xdk_benaloh.c</Link>
+      <ExcludedFromBuild Condition="!$([System.String]::Copy(';$(SharedCommonCompile);').Contains(';xdk_benaloh.c;'))">true</ExcludedFromBuild>
+      <PrecompiledHeader Condition="$([System.String]::Copy(';$(SharedCommonCompile);').Contains(';xdk_benaloh.c;'))">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(CommonRoot)\xdk_shellfolder2.cpp">
+      <Link>shared\common\xdk_shellfolder2.cpp</Link>
+      <ExcludedFromBuild Condition="!$([System.String]::Copy(';$(SharedCommonCompile);').Contains(';xdk_shellfolder2.cpp;'))">true</ExcludedFromBuild>
+      <PrecompiledHeader Condition="$([System.String]::Copy(';$(SharedCommonCompile);').Contains(';xdk_shellfolder2.cpp;'))">NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(CommonRoot)\xdk_shellfolder_view.cpp">
+      <Link>shared\common\xdk_shellfolder_view.cpp</Link>
+      <ExcludedFromBuild Condition="!$([System.String]::Copy(';$(SharedCommonCompile);').Contains(';xdk_shellfolder_view.cpp;'))">true</ExcludedFromBuild>
+      <PrecompiledHeader Condition="$([System.String]::Copy(';$(SharedCommonCompile);').Contains(';xdk_shellfolder_view.cpp;'))">NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+</Project>

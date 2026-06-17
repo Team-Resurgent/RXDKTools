@@ -1,7 +1,0 @@
-TARGETNAME=xbmkdir
-
-SOURCES=\
-    xbmkdir.rc \
-    xbmkdir.cpp
-
-!include ..\sources.inc

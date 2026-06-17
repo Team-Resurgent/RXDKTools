@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <RepoRoot>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\'))</RepoRoot>
+    <SrcRoot>$(RepoRoot)src\</SrcRoot>
+    <SharedRoot>$(RepoRoot)shared\</SharedRoot>
+    <OutRoot>$(RepoRoot)out\</OutRoot>
+    <LibOutDir>$(OutRoot)lib\$(Platform)\$(Configuration)\</LibOutDir>
+    <BinOutDir>$(OutRoot)bin\$(Platform)\$(Configuration)\</BinOutDir>
+    <IntRoot>$(OutRoot)obj\</IntRoot>
+    <IncludeRoot>$(SharedRoot)include</IncludeRoot>
+    <CommonRoot>$(SharedRoot)common</CommonRoot>
+    <ImportDirectoryBuildProps>false</ImportDirectoryBuildProps>
+    <ImportDirectoryBuildTargets>false</ImportDirectoryBuildTargets>
+  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)XboxTools.SharedItems.props" />
+</Project>

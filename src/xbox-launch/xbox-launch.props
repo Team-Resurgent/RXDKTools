@@ -1,24 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <LaunchIncludeDirs>$(IncludeRoot);$(IncludeRoot)\crypto;$(SrcRoot)\common</LaunchIncludeDirs>
+    <LaunchIncludeDirs>$(IncludeRoot);$(IncludeRoot)\crypto;$(CommonRoot)</LaunchIncludeDirs>
     <LaunchLibDir>$(LibOutDir)</LaunchLibDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
-    <ClCompile>
-      <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0501;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(LaunchIncludeDirs);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <WarningLevel>Level3</WarningLevel>
-      <DisableSpecificWarnings>4996;4267;4244;4018;4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>$(LaunchLibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xbdbgs.lib;ws2_32.lib;mswsock.lib;kernel32.lib;advapi32.lib;user32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>_WIN64;WIN64;_WIN32_WINNT=0x0601;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(LaunchIncludeDirs);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

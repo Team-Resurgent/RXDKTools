@@ -4,29 +4,7 @@
     <XbshlextIncludeDirs>$(MSBuildThisFileDirectory);$(MSBuildThisFileDirectory)generated;$(MSBuildThisFileDirectory)sdkp\inc;$(IncludeRoot)</XbshlextIncludeDirs>
     <XbshlextLibDir>$(LibOutDir)</XbshlextLibDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
-    <ClCompile>
-      <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0601;NDEBUG;UNICODE;_UNICODE;UNICODE_SHDOCVW;POSTSPLIT;USE_MIRRORING;_MT;NO_PRIVATE_HEADERS;FEATURE_IE40;NASH;_ATL_STATIC_REGISTRY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(XbshlextIncludeDirs);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
-      <WarningLevel>Level3</WarningLevel>
-      <DisableSpecificWarnings>4996;4267;4244;4018;4100;4127;4701;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <ModuleDefinitionFile>$(MSBuildThisFileDirectory)xbshlext.def</ModuleDefinitionFile>
-      <AdditionalLibraryDirectories>$(XbshlextLibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xbdbgs.lib;shlwapi.lib;shell32.lib;gdi32.lib;user32.lib;kernel32.lib;ws2_32.lib;mswsock.lib;ole32.lib;oleaut32.lib;uuid.lib;comctl32.lib;advapi32.lib;urlmon.lib;htmlhelp.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>$(XbshlextIncludeDirs);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>_WIN64;WIN64;_WIN32_WINNT=0x0601;NDEBUG;UNICODE;_UNICODE;UNICODE_SHDOCVW;POSTSPLIT;USE_MIRRORING;_MT;NO_PRIVATE_HEADERS;FEATURE_IE40;NASH;_ATL_STATIC_REGISTRY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <LanguageStandard>stdcpp17</LanguageStandard>

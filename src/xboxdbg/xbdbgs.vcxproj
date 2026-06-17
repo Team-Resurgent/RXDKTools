@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Release|x64">
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
@@ -16,18 +12,16 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>StaticLibrary</ConfigurationType>
-    <PlatformToolset>v145</PlatformToolset>
-    <CharacterSet>MultiByte</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <PlatformToolset>v145</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <Import Project="$(MSBuildThisFileDirectory)..\XboxNeighborhood.props" />
+  <PropertyGroup>
+    <SharedCommonCompile>xboxdbg_static_init.c;dm_error_shim.c;xdk_benaloh.c</SharedCommonCompile>
+  </PropertyGroup>
+  <Import Project="$(MSBuildThisFileDirectory)..\XboxTools.props" />
   <Import Project="$(MSBuildThisFileDirectory)xbdbgs.props" />
   <PropertyGroup>
     <TargetName>xbdbgs</TargetName>
@@ -55,15 +49,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)counters.c" />
     <ClCompile Include="$(MSBuildThisFileDirectory)xbeutil.c" />
     <ClCompile Include="$(MSBuildThisFileDirectory)dll\notify.c" />
-    <ClCompile Include="$(SrcRoot)\common\xboxdbg_static_init.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="$(SrcRoot)\common\dm_error_shim.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="$(SrcRoot)\common\xdk_benaloh.c">
-      <PrecompiledHeader>NotUsing</PrecompiledHeader>
-    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

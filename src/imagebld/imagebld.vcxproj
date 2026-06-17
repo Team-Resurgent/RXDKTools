@@ -22,7 +22,7 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
-  <Import Project="$(MSBuildThisFileDirectory)..\XboxNeighborhood.props" />
+  <Import Project="$(MSBuildThisFileDirectory)..\XboxTools.props" />
   <Import Project="$(MSBuildThisFileDirectory)imagebld.props" />
   <PropertyGroup>
     <TargetName>imagebld</TargetName>
@@ -54,7 +54,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)cklibver.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="$(SrcRoot)\crypto\xcbase.c">
+    <ClCompile Include="$(MSBuildThisFileDirectory)xcbase.c">
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
     </ClCompile>
   </ItemGroup>
@@ -62,6 +62,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)imgbldp.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)imgbldrc.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)msftlogo.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)umkm.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(MSBuildThisFileDirectory)imagebld.rc" />

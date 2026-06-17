@@ -1,29 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
   <PropertyGroup>
-    <XbwatsonIncludeDirs>$(MSBuildThisFileDirectory);$(IncludeRoot);$(SrcRoot)\common</XbwatsonIncludeDirs>
+    <XbwatsonIncludeDirs>$(MSBuildThisFileDirectory);$(IncludeRoot);$(CommonRoot)</XbwatsonIncludeDirs>
     <WatsonLibDir>$(LibOutDir)</WatsonLibDir>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)'=='Win32'">
-    <ClCompile>
-      <PreprocessorDefinitions>WIN32;_WIN32_WINNT=0x0501;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(XbwatsonIncludeDirs);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PrecompiledHeader>Use</PrecompiledHeader>
-      <PrecompiledHeaderFile>StdAfx.h</PrecompiledHeaderFile>
-      <WarningLevel>Level3</WarningLevel>
-      <DisableSpecificWarnings>4996;4267;4244;4018;4100;%(DisableSpecificWarnings)</DisableSpecificWarnings>
-    </ClCompile>
-    <Link>
-      <SubSystem>Windows</SubSystem>
-      <ImageHasSafeExceptionHandlers>false</ImageHasSafeExceptionHandlers>
-      <AdditionalLibraryDirectories>$(WatsonLibDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>xbdbgs.lib;gdi32.lib;comdlg32.lib;imagehlp.lib;kernel32.lib;user32.lib;advapi32.lib;ws2_32.lib;mswsock.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
-    <ResourceCompile>
-      <AdditionalIncludeDirectories>$(XbwatsonIncludeDirs);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-    </ResourceCompile>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Platform)'=='x64'">
+  <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>_WIN64;WIN64;_WIN32_WINNT=0x0601;_CRT_SECURE_NO_WARNINGS;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(XbwatsonIncludeDirs);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>

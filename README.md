@@ -45,8 +45,9 @@ Requires Visual Studio 2022 with **Desktop development with C++** (v143 toolset)
 
    - All binaries → `out/bin/x64/Release/` (including `imagebld.exe`, `xbshlext.dll`, `xboxdbg-bridge.exe`, CLI tools)
    - Static libraries → `out/lib/x64/Release/` (`xbdbgs.lib`, `xbfile.lib`, `xrsa.lib`)
+   - Building **`xbshlext`** also produces `XboxNeighborhood-Setup.exe` in `out/bin/x64/Release/` (Inno Setup is installed automatically if missing)
 
-### Projects (each `.vcxproj` lives alongside its sources under `src/`)
+### Projects (each `.vcxproj` lives alongside its sources under `src/`; shared headers and helpers are under `shared/` at the repo root)
 
 | Project | Output | Links |
 |---------|--------|-------|
@@ -67,16 +68,12 @@ All tools link **`xbdbgs.lib`** statically. Everything builds as **x64**, includ
 
 ## Build the installer
 
-Requires [Inno Setup 6](https://jrsoftware.org/isinfo.php), a built `out/bin/x64/Release/xbshlext.dll`, and these files in the repo root:
-
-- `Icon.ico`
-- `WizardImage.bmp`
-- `WizardSmallImage.bmp`
+Building **`xbshlext`** (Release | x64) runs this automatically as a post-build step. You can also build it standalone after `xbshlext.dll` is built. Requires the assets in `setup/` (`Icon.ico`, `WizardImage.bmp`, `WizardSmallImage.bmp`). [Inno Setup 6](https://jrsoftware.org/isinfo.php) is installed automatically via winget or Chocolatey when missing (elevated shell may be required).
 
 From the repo root:
 
 ```text
-build-installer.cmd
+setup\build-installer.cmd
 ```
 
 The setup executable is written to `out\bin\x64\Release\XboxNeighborhood-Setup.exe`.

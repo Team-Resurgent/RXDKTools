@@ -1,7 +1,0 @@
-TARGETNAME=xbecopy
-
-SOURCES=\
-    xbecopy.rc \
-    xbecopy.cpp
-
-!include ..\sources.inc
