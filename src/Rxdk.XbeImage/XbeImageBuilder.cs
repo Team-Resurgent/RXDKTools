@@ -319,11 +319,24 @@ public sealed class XbeImageBuilder
                 return;
             }
 
-            _xbe.TlsRawDataHeader.TlsDirectoryOffset = GetTlsDirectoryFileOffset();
-            _xbe.ImageHeader.TlsDirectory = tlsDirectoryEntry.VirtualAddress;
-            EnsureVirtualAddressIsPreload(tlsDirectoryEntry.VirtualAddress);
+            // Resolve the RVA of the real IMAGE_TLS_DIRECTORY. Normally the PE TLS
+            // data directory points straight at it (_tls_used), but some linkers --
+            // notably lld-link -- aim IMAGE_DIRECTORY_ENTRY_TLS at compiler metadata
+            // instead. If the structure at the data-directory RVA is not a valid TLS
+            // directory whose template lives in .tls, scan the read-only data for the
+            // real one (same heuristic used by ScanForAdditionalTlsDirectories).
+            var tlsDirectoryRva = tlsDirectoryEntry.VirtualAddress;
+            if (!IsTlsDirectory(tlsDirectoryRva) && TryFindTlsDirectoryRva(out var resolvedRva))
+            {
+                tlsDirectoryRva = resolvedRva;
+            }
 
-            var tlsBytes = Pe32Helpers.ImageDataDirectoryToData(_inputImage, ref _ntHeaders, XbeImageConstants.ImageDirectoryEntryTls, _inputPath);
+            var directorySection = Pe32Helpers.VirtualAddressToSectionHeader(_inputImage, ref _ntHeaders, tlsDirectoryRva, _inputPath);
+            _xbe.TlsRawDataHeader.TlsDirectoryOffset = (int)(directorySection.PointerToRawData + (tlsDirectoryRva - directorySection.VirtualAddress));
+            _xbe.ImageHeader.TlsDirectory = tlsDirectoryRva;
+            EnsureVirtualAddressIsPreload(tlsDirectoryRva);
+
+            var tlsBytes = Pe32Helpers.VirtualAddressToData(_inputImage, ref _ntHeaders, tlsDirectoryRva, _inputPath);
             ref var tlsDirectory = ref MemoryMarshal.AsRef<ImageTlsDirectory32>(tlsBytes);
             if (tlsDirectory.EndAddressOfRawData - tlsDirectory.StartAddressOfRawData != 0)
             {
@@ -344,12 +357,82 @@ public sealed class XbeImageBuilder
             }
         }
 
-        private int GetTlsDirectoryFileOffset()
+        // True if the structure at tlsDirectoryRva is a valid IMAGE_TLS_DIRECTORY
+        // whose raw-data template lives in the .tls section.
+        private bool IsTlsDirectory(uint tlsDirectoryRva)
         {
-            var tlsDirectoryEntry = Pe32Reader.GetDataDirectory(_inputImage, XbeImageConstants.ImageDirectoryEntryTls);
-            var section = Pe32Helpers.VirtualAddressToSectionHeader(
-                _inputImage, ref _ntHeaders, tlsDirectoryEntry.VirtualAddress, _inputPath);
-            return (int)(section.PointerToRawData + (tlsDirectoryEntry.VirtualAddress - section.VirtualAddress));
+            if (tlsDirectoryRva == 0)
+            {
+                return false;
+            }
+
+            ImageSectionHeader section;
+            try
+            {
+                section = Pe32Helpers.VirtualAddressToSectionHeader(_inputImage, ref _ntHeaders, tlsDirectoryRva, _inputPath);
+            }
+            catch (XbeImageException)
+            {
+                return false;
+            }
+
+            var fileOffset = (int)(section.PointerToRawData + (tlsDirectoryRva - section.VirtualAddress));
+            if (fileOffset < 0 || fileOffset + Marshal.SizeOf<ImageTlsDirectory32>() > _inputImage.Length)
+            {
+                return false;
+            }
+
+            ref var candidate = ref MemoryMarshal.AsRef<ImageTlsDirectory32>(_inputImage.AsSpan(fileOffset));
+            return LooksLikeTlsDirectory(candidate, _ntHeaders.OptionalHeader.ImageBase) &&
+                   TlsTemplateInTlsSection(candidate.StartAddressOfRawData);
+        }
+
+        // Scan .rdata for a structure that looks like the real IMAGE_TLS_DIRECTORY
+        // (where _tls_used lives) and whose template points into .tls.
+        private bool TryFindTlsDirectoryRva(out uint tlsDirectoryRva)
+        {
+            tlsDirectoryRva = 0;
+            var imageBase = _ntHeaders.OptionalHeader.ImageBase;
+            var structSize = Marshal.SizeOf<ImageTlsDirectory32>();
+            var count = _ntHeaders.FileHeader.NumberOfSections;
+            for (var i = 0; i < count; i++)
+            {
+                var section = Pe32Helpers.ReadSectionHeader(_inputImage, i);
+                if (section.SizeOfRawData == 0 ||
+                    !Pe32Helpers.GetSectionName(section).StartsWith(".rdata", StringComparison.Ordinal))
+                {
+                    continue;
+                }
+
+                var baseOffset = (int)section.PointerToRawData;
+                var limit = (int)Math.Min(section.SizeOfRawData, (uint)Math.Max(0, _inputImage.Length - baseOffset));
+                for (var offset = 0; offset + structSize <= limit; offset += 4)
+                {
+                    ref var candidate = ref MemoryMarshal.AsRef<ImageTlsDirectory32>(_inputImage.AsSpan(baseOffset + offset));
+                    if (LooksLikeTlsDirectory(candidate, imageBase) &&
+                        TlsTemplateInTlsSection(candidate.StartAddressOfRawData))
+                    {
+                        tlsDirectoryRva = section.VirtualAddress + (uint)offset;
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        // True if a TLS template raw-data load address points into the .tls section
+        // of the input image (full VA = ImageBase + section RVA).
+        private bool TlsTemplateInTlsSection(uint startAddress)
+        {
+            if (Pe32Helpers.NameToSectionHeader(_inputImage, ref _ntHeaders, ".tls", out _) is not { } tlsSection)
+            {
+                return false;
+            }
+
+            var low = _ntHeaders.OptionalHeader.ImageBase + tlsSection.VirtualAddress;
+            var high = low + Math.Max(tlsSection.VirtualSize, tlsSection.SizeOfRawData);
+            return startAddress >= low && startAddress < high;
         }
 
         private void ProcessLibraryVersions()

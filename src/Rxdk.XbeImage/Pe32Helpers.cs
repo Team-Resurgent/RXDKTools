@@ -261,17 +261,16 @@ public static class Pe32Helpers
             throw new XbeImageException("Input file is not a PE32 I386 image.");
         }
 
+        // imagebld only ever emits Xbox images, and the i386 machine check above
+        // already gates architecture, so the input PE subsystem is informational.
+        // The MS Xbox linker emits IMAGE_SUBSYSTEM_XBOX directly; other linkers
+        // (lld-link, link.exe) emit CONSOLE/GUI/unknown. Coerce whatever it is to
+        // Xbox rather than rejecting it, so callers don't need a separate PE-patch
+        // pre-pass just to flip the subsystem byte.
         ref var optional = ref Pe32Reader.GetOptionalHeader(image);
         if (optional.Subsystem != XbeImageConstants.ImageSubsystemXbox)
         {
-            if (optional.Subsystem == XbeImageConstants.ImageSubsystemWindowsCui)
-            {
-                optional.Subsystem = XbeImageConstants.ImageSubsystemXbox;
-            }
-            else
-            {
-                throw new XbeImageException("Input file subsystem is not CONSOLE or Xbox.");
-            }
+            optional.Subsystem = XbeImageConstants.ImageSubsystemXbox;
         }
     }
 
