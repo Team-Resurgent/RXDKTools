@@ -54,6 +54,29 @@ public sealed class XboxLaunchRunner : IDisposable
             _output.WriteLine($"SetTitle dir={options.Directory} title={options.Title}");
             _debug.SetTitle(options.Directory!, options.Title!,
                 string.IsNullOrEmpty(options.CommandLine) ? null : options.CommandLine);
+
+            // Launch-and-run: do NOT set an initial breakpoint or stop-on-thread-
+            // create. Just Go and stream the title's debug output for the window;
+            // the title keeps running on the kit afterwards (matches a manual
+            // launch). The stop-based path below is for handing off to a debugger.
+            if (options.Go)
+            {
+                _awaitingTitleThread = false;
+                _seenTitleMod = false;
+                SetLaunchBaseFromTitle(options.Title!);
+
+                _debug.Go();
+
+                _output.WriteLine(
+                    $"Launched (run mode); streaming debug output up to {options.TimeoutMs} ms (title runs free)...");
+                // Notifications stream on the session callback thread; just keep
+                // this thread alive for the window. Don't wait on _breakEvent --
+                // a thread-create/break would cut streaming short.
+                System.Threading.Thread.Sleep(options.TimeoutMs);
+                _output.WriteLine("Launch window elapsed; title continues running on the kit.");
+                return XboxLaunchExitCode.Success;
+            }
+
             _debug.SetInitialBreakpoint();
             _debug.StopOn(XbdmDebugConstants.DmstopCreateThread, stop: true);
 

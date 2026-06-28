@@ -42,6 +42,12 @@ public static class XboxLaunchOptionsParser
                 continue;
             }
 
+            if (IsSwitch(arg, "go"))
+            {
+                options.Go = true;
+                continue;
+            }
+
             if (IsSwitch(arg, "timeout") && i + 1 < args.Length)
             {
                 options.TimeoutMs = int.Parse(args[++i]);
