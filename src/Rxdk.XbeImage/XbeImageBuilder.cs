@@ -348,6 +348,18 @@ public sealed class XbeImageBuilder
                     endExclusive--;
                 }
 
+                // Shrink EndAddressOfRawData to the bytes we actually keep. The loop
+                // above folded trailing zero bytes into SizeOfZeroFill; without this
+                // the directory still advertises the full raw-template size even
+                // though no raw-data section backs the trimmed tail. The kernel's
+                // per-thread TLS setup (XapiThreadStartup) then RtlCopyMemory's the
+                // advertised End-Start bytes from the template pointer into each
+                // thread's TLS block, reading past the real template into adjacent
+                // or unmapped memory -- harmless on xemu, a fault on real hardware.
+                // For an all-zero template this collapses to End == Start (raw size
+                // 0) plus pure zero-fill, matching the XDK linker's TLS directory.
+                tlsDirectory.EndAddressOfRawData = tlsDirectory.StartAddressOfRawData + (uint)endExclusive;
+
                 if (endExclusive > 0)
                 {
                     _xbe.TlsRawDataHeader.VirtualSize = (uint)endExclusive;
