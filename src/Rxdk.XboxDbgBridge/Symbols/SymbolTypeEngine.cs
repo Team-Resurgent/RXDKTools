@@ -704,8 +704,10 @@ internal sealed partial class SymbolTypeEngine
             var wstrPtr = Marshal.ReadIntPtr(outPtr);
             if (wstrPtr == IntPtr.Zero)
                 return false;
-            name = Marshal.PtrToStringUni(wstrPtr) ?? string.Empty;
-            return name.Length > 0;
+            // SymGetTypeInfo can return a pointer that is not a safely NUL-terminated string for our
+            // Zig-produced PDBs; a plain PtrToStringUni would scan off the mapping and raise an
+            // (uncatchable) AccessViolationException that kills the bridge. Read it defensively.
+            return NativeStringReader.TryReadWideString(wstrPtr, 512, out name);
         }
         finally
         {
