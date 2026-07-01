@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!--
+    Pure-managed, cross-platform PDB reader. NO dependency on dbghelp/DIA or any native
+    Windows component, so it runs identically on the win/linux/osx bridges. Built to read the
+    modern S_LOCAL / S_DEFRANGE_FRAMEPOINTER_REL local-variable records that Zig/LLVM emit,
+    which dbghelp misinterprets (see Rxdk.XboxDbgBridge locals handling).
+  -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Rxdk.Pdb</RootNamespace>
+    <AssemblyName>Rxdk.Pdb</AssemblyName>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Rxdk.Pdb.Tests" />
+  </ItemGroup>
+</Project>

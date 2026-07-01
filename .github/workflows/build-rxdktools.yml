@@ -50,6 +50,9 @@ jobs:
       - name: Build RXDKTools.sln
         run: msbuild RXDKTools.sln /p:Configuration=Release /p:Platform=x64 /p:RestoreDuringBuild=false /m /v:m
 
+      - name: Test Rxdk.Pdb (managed PDB reader)
+        run: dotnet test src/Rxdk.Pdb.Tests/Rxdk.Pdb.Tests.csproj -c Release
+
       # - name: Test Rxdk.XbeImage
       #   run: dotnet test src/Rxdk.XbeImage.Tests/Rxdk.XbeImage.Tests.csproj -c Release --no-restore
 
@@ -123,6 +126,10 @@ jobs:
           dotnet restore src/Rxdk.XbeImage.Tests/Rxdk.XbeImage.Tests.csproj
           dotnet restore src/Rxdk.XboxDbgBridge/Rxdk.XboxDbgBridge.csproj
 
+      # Cross-platform check: the pure-managed PDB reader must build and pass on Linux too.
+      - name: Test Rxdk.Pdb (managed PDB reader)
+        run: dotnet test src/Rxdk.Pdb.Tests/Rxdk.Pdb.Tests.csproj -c Release
+
       # - name: Test Rxdk.XbeImage
       #   run: dotnet test src/Rxdk.XbeImage.Tests/Rxdk.XbeImage.Tests.csproj -c Release --no-restore
 
@@ -186,6 +193,10 @@ jobs:
         run: |
           dotnet restore src/Rxdk.XbeImage.Tests/Rxdk.XbeImage.Tests.csproj
           dotnet restore src/Rxdk.XboxDbgBridge/Rxdk.XboxDbgBridge.csproj
+
+      # Cross-platform check: the pure-managed PDB reader must build and pass on macOS too.
+      - name: Test Rxdk.Pdb (managed PDB reader)
+        run: dotnet test src/Rxdk.Pdb.Tests/Rxdk.Pdb.Tests.csproj -c Release
 
       # - name: Test Rxdk.XbeImage
       #   run: dotnet test src/Rxdk.XbeImage.Tests/Rxdk.XbeImage.Tests.csproj -c Release --no-restore
