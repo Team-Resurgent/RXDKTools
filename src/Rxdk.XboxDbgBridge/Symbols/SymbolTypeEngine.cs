@@ -341,21 +341,21 @@ internal sealed partial class SymbolTypeEngine
         if (IsCompilerGenerated(name) || state.Variables.WasEmitted(name))
             return true;
 
-        var size = (uint)Marshal.ReadInt32(symbolInfo, DbgHelpNative.SymInfoSize);
-        var typeIndex = (uint)Marshal.ReadInt32(symbolInfo, DbgHelpNative.SymInfoTypeIndex);
         var address = (long)Marshal.ReadInt64(symbolInfo, DbgHelpNative.SymInfoAddress);
         var runtimeAddr = (nuint)((long)state.Context.Ebp + address);
 
-        if (size > 4)
-        {
-            state.Variables.Append(name, state.Engine.FormatAggregateSummary(typeIndex, runtimeAddr, size, state.Memory), expandable: true, expandBase: name);
-            return true;
-        }
-
+        // dbghelp cannot describe the modern S_LOCAL / S_DEFRANGE_FRAMEPOINTER_REL locals that
+        // Zig/LLVM emit: it hands back the def-range's *code span* as SYMBOL_INFO.Size and a
+        // garbage type index (a 4-byte HRESULT comes back as size=256 -> "array[64]"). The
+        // frame-relative address is still correct, though. Anything reaching this supplemental
+        // fallback had no usable type from the frame-type tree (which handles dbghelp-friendly
+        // PDBs with real aggregate expansion), so render it as a scalar at its frame address
+        // instead of trusting the bogus size/type. Pass typeId=0 so float formatting relies on
+        // the name heuristic rather than the unreliable index.
         var dword = state.Memory.ReadDword(runtimeAddr);
         if (dword is null)
             return true;
-        state.Variables.Append(name, state.Engine.FormatScalar(dword.Value, name, typeIndex));
+        state.Variables.Append(name, state.Engine.FormatScalar(dword.Value, name, 0));
         return true;
     };
 
