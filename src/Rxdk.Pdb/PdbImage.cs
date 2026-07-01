@@ -1,3 +1,4 @@
+using Rxdk.Pdb.Dbi;
 using Rxdk.Pdb.Msf;
 using Rxdk.Pdb.Pdb;
 using Rxdk.Pdb.Tpi;
@@ -14,6 +15,7 @@ public sealed class PdbImage
     private PdbInfoStream? _info;
     private TpiStream? _tpi;
     private TypeSystem? _types;
+    private DbiStream? _dbi;
 
     private PdbImage(MsfFile msf) => _msf = msf;
 
@@ -32,4 +34,7 @@ public sealed class PdbImage
 
     /// <summary>Type resolver over the TPI stream (sizes, names, pointer/array shape, members).</summary>
     public TypeSystem Types => _types ??= new TypeSystem(Tpi);
+
+    /// <summary>DBI stream (modules, section contributions, section headers; RVA→module lookup).</summary>
+    public DbiStream Dbi => _dbi ??= DbiStream.Parse(_msf);
 }
