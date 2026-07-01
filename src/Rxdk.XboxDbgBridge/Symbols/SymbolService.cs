@@ -1,5 +1,6 @@
 using System.Runtime.InteropServices;
 using System.Text;
+using Rxdk.Pdb;
 using Rxdk.XboxDbgBridge.Interop;
 
 namespace Rxdk.XboxDbgBridge.Symbols;
@@ -12,6 +13,12 @@ internal sealed class SymbolService : IDisposable
     private string _loadedModule = string.Empty;
     private string _mapPath = string.Empty;
     private uint _mapLinkBase = 0x400000;
+
+    // Pure-managed PDB reader, preferred over dbghelp for locals (dbghelp mis-parses the modern
+    // S_LOCAL/S_DEFRANGE records Zig/LLVM emit). Opened lazily from the loaded PDB path.
+    private string _pdbPath = string.Empty;
+    private PdbImage? _pdbImage;
+    private bool _managedUnavailable;
 
     internal bool IsAvailable => OperatingSystem.IsWindows();
 
@@ -77,6 +84,9 @@ internal sealed class SymbolService : IDisposable
 
         _loadedModule = moduleName;
         _pdbBase = baseAddr;
+        _pdbPath = pdbPath;
+        _pdbImage = null;
+        _managedUnavailable = false;
 
         var map = string.IsNullOrWhiteSpace(mapPath)
             ? Path.ChangeExtension(imagePath, ".map")
@@ -106,6 +116,32 @@ internal sealed class SymbolService : IDisposable
         _loadedModule = string.Empty;
         _mapPath = string.Empty;
         _mapLinkBase = 0x400000;
+        _pdbPath = string.Empty;
+        _pdbImage = null;
+        _managedUnavailable = false;
+    }
+
+    /// <summary>Builds a managed-locals reader over the loaded PDB, or null if it can't be used.</summary>
+    private ManagedSymbols? TryGetManaged()
+    {
+        if (_managedUnavailable || _moduleBase == 0 || string.IsNullOrEmpty(_pdbPath))
+            return null;
+
+        if (_pdbImage is null)
+        {
+            try
+            {
+                _pdbImage = PdbImage.OpenFile(_pdbPath);
+            }
+            catch (Exception ex)
+            {
+                _managedUnavailable = true;
+                BridgeWriter.Log($"managed PDB open failed ({_pdbPath}): {ex.Message}");
+                return null;
+            }
+        }
+
+        return new ManagedSymbols(_pdbImage, _moduleBase);
     }
 
     internal nuint RelocateAddress(nuint pdbAddress)
@@ -216,6 +252,21 @@ internal sealed class SymbolService : IDisposable
     {
         if (!_initialized || _pdbBase == 0)
             return;
+
+        var managed = TryGetManaged();
+        if (managed is not null)
+        {
+            try
+            {
+                if (managed.EmitLocals(ref context, variables, memory))
+                    return;
+            }
+            catch (Exception ex)
+            {
+                BridgeWriter.Log($"managed EmitLocals failed: {ex.Message}");
+            }
+        }
+
         CreateTypeEngine().EmitLocals(ref context, variables, memory);
     }
 
@@ -223,6 +274,21 @@ internal sealed class SymbolService : IDisposable
     {
         if (!_initialized || _pdbBase == 0)
             return false;
+
+        var managed = TryGetManaged();
+        if (managed is not null)
+        {
+            try
+            {
+                if (managed.TryEmitMembers(symbolBase, ref context, variables, memory))
+                    return true;
+            }
+            catch (Exception ex)
+            {
+                BridgeWriter.Log($"managed TryEmitMembers failed: {ex.Message}");
+            }
+        }
+
         return CreateTypeEngine().TryEmitMembers(symbolBase, ref context, memory, variables);
     }
 

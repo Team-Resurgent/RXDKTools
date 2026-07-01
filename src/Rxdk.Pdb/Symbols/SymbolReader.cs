@@ -82,6 +82,7 @@ public sealed class SymbolReader
         var r = new LeReader(stream) { Position = CodeViewSignatureC13 }; // skip the CV signature (C13)
 
         var depth = 0;
+        var inlineDepth = 0; // locals inside inline sites belong to the inlined callee, not this frame
         string funcName = string.Empty;
         uint funcRva = 0;
         uint codeSize = 0;
@@ -114,6 +115,7 @@ public sealed class SymbolReader
                         codeSize = proc.CodeSize;
                         locals = new List<LocalVariable>();
                         pendingName = null;
+                        inlineDepth = 0;
                     }
                     else
                     {
@@ -124,28 +126,41 @@ public sealed class SymbolReader
                 }
 
                 case SymbolKind.Block32:
-                case SymbolKind.InlineSite:
                     if (depth > 0)
                         depth++;
+                    break;
+
+                case SymbolKind.InlineSite:
+                    if (depth > 0)
+                    {
+                        depth++;
+                        inlineDepth++;
+                    }
+
                     break;
 
                 case SymbolKind.End:
                 case SymbolKind.ProcIdEnd:
                 case SymbolKind.InlineSiteEnd:
-                    if (depth > 0 && --depth == 0 && funcRva != 0)
+                    if (depth > 0)
                     {
-                        yield return new FrameInfo
+                        if (kind == SymbolKind.InlineSiteEnd && inlineDepth > 0)
+                            inlineDepth--;
+                        if (--depth == 0 && funcRva != 0)
                         {
-                            FunctionName = funcName,
-                            FunctionRva = funcRva,
-                            CodeSize = codeSize,
-                            Locals = locals,
-                        };
+                            yield return new FrameInfo
+                            {
+                                FunctionName = funcName,
+                                FunctionRva = funcRva,
+                                CodeSize = codeSize,
+                                Locals = locals,
+                            };
+                        }
                     }
 
                     break;
 
-                case SymbolKind.Local when depth > 0:
+                case SymbolKind.Local when depth > 0 && inlineDepth == 0:
                 {
                     var type = r.ReadUInt32();
                     var flags = r.ReadUInt16();
@@ -164,8 +179,8 @@ public sealed class SymbolReader
                     break;
                 }
 
-                case SymbolKind.DefRangeFramePointerRel when depth > 0 && pendingName is not null:
-                case SymbolKind.DefRangeFramePointerRelFullScope when depth > 0 && pendingName is not null:
+                case SymbolKind.DefRangeFramePointerRel when depth > 0 && inlineDepth == 0 && pendingName is not null:
+                case SymbolKind.DefRangeFramePointerRelFullScope when depth > 0 && inlineDepth == 0 && pendingName is not null:
                 {
                     var offset = r.ReadInt32(); // frame-pointer-relative offset
                     locals.Add(new LocalVariable(pendingName, pendingType, offset, pendingIsParam));
@@ -173,7 +188,7 @@ public sealed class SymbolReader
                     break;
                 }
 
-                case SymbolKind.BpRel32 when depth > 0:
+                case SymbolKind.BpRel32 when depth > 0 && inlineDepth == 0:
                 {
                     var offset = r.ReadInt32();
                     var type = r.ReadUInt32();
@@ -182,7 +197,7 @@ public sealed class SymbolReader
                     break;
                 }
 
-                case SymbolKind.RegRel32 when depth > 0:
+                case SymbolKind.RegRel32 when depth > 0 && inlineDepth == 0:
                 {
                     var offset = r.ReadUInt32();
                     var type = r.ReadUInt32();

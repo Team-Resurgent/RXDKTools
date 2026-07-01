@@ -33,5 +33,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Rxdk.Xbdm.Abstractions\Rxdk.Xbdm.Abstractions.csproj" />
     <ProjectReference Include="..\Rxdk.Xbdm.Managed\Rxdk.Xbdm.Managed.csproj" />
+    <ProjectReference Include="..\Rxdk.Pdb\Rxdk.Pdb.csproj" />
   </ItemGroup>
 </Project>
