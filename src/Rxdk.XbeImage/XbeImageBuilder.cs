@@ -605,6 +605,25 @@ public sealed class XbeImageBuilder
                 _xbe.SectionHeaders.SizeOfSectionNames;
         }
 
+        // Number of bytes the XBE should store (and the loader copy) for a section.
+        // A writable section whose VirtualSize exceeds its file-backed SizeOfRawData
+        // carries a zero-initialized (.bss) tail. The Xbox XBE loader copies
+        // SizeOfRawData bytes and does NOT zero [SizeOfRawData, VirtualSize), so for
+        // such sections we store the full VirtualSize (real bytes + zero pad) and set
+        // SizeOfRawData to match. Globals then boot zeroed with no runtime fixup
+        // (this is what lets the image_init workaround be removed). Read-only sections
+        // (.text/.rdata) are unaffected: their VirtualSize == SizeOfRawData.
+        private static uint EmittedRawSize(ImageSectionHeader section)
+        {
+            if ((section.Characteristics & XbeImageConstants.ImageScnMemWrite) != 0 &&
+                section.VirtualSize > section.SizeOfRawData)
+            {
+                return section.VirtualSize;
+            }
+
+            return section.SizeOfRawData;
+        }
+
         private void LayoutOutputHeaders()
         {
             var sizeOfHeaders = Marshal.SizeOf<XbeImageHeader>();
@@ -1074,7 +1093,7 @@ public sealed class XbeImageBuilder
                 if ((section.Characteristics & XbeImageConstants.ImageScnMemPreload) != 0)
                 {
                     imageFileByteOffsets[i] = fileByteOffset;
-                    fileByteOffset += Pe32Helpers.RoundToPages((int)section.SizeOfRawData);
+                    fileByteOffset += Pe32Helpers.RoundToPages((int)EmittedRawSize(section));
                 }
             }
 
@@ -1094,7 +1113,7 @@ public sealed class XbeImageBuilder
                     section.SizeOfRawData = (uint)Pe32Helpers.TrimSectionRawDataSize(_inputImage, ref _ntHeaders, section, _inputPath);
                     Pe32Helpers.WriteSectionHeader(_inputImage, sectionIndex, section);
                     imageFileByteOffsets[sectionIndex] = fileByteOffset;
-                    fileByteOffset += Pe32Helpers.RoundToPages((int)section.SizeOfRawData);
+                    fileByteOffset += Pe32Helpers.RoundToPages((int)EmittedRawSize(section));
                 }
             }
 
@@ -1115,13 +1134,19 @@ public sealed class XbeImageBuilder
             for (var i = 0; i < executableSectionCount; i++)
             {
                 var section = Pe32Helpers.ReadSectionHeader(_inputImage, i);
-                ReadOnlySpan<byte> sectionData = section.SizeOfRawData > 0
-                    ? Pe32Helpers.VirtualAddressToData(_inputImage, ref _ntHeaders, section.VirtualAddress, _inputPath)[..(int)section.SizeOfRawData]
-                    : ReadOnlySpan<byte>.Empty;
+                var emittedRawSize = EmittedRawSize(section);
+                // Initialized (file-backed) bytes, then a zero-filled tail out to
+                // emittedRawSize so a writable section's .bss loads as zero.
+                var sectionImage = new byte[emittedRawSize];
+                if (section.SizeOfRawData > 0)
+                {
+                    Pe32Helpers.VirtualAddressToData(_inputImage, ref _ntHeaders, section.VirtualAddress, _inputPath)[..(int)section.SizeOfRawData]
+                        .CopyTo(sectionImage);
+                }
 
                 SeekOutputFile(imageFileByteOffsets[i]);
-                WriteOutputFile(sectionData);
-                WriteZeroPadding(XbeImageConstants.PageSize - Pe32Helpers.ByteOffset((int)section.SizeOfRawData));
+                WriteOutputFile(sectionImage);
+                WriteZeroPadding(XbeImageConstants.PageSize - Pe32Helpers.ByteOffset((int)emittedRawSize));
 
                 var sectionName = Pe32Helpers.GetSectionName(section);
                 SeekOutputFile(sectionHeaderNameByteOffset);
@@ -1130,9 +1155,9 @@ public sealed class XbeImageBuilder
                 var xbeSection = new XbeImageSection
                 {
                     VirtualAddress = section.VirtualAddress + firstSectionBaseAddress,
-                    VirtualSize = Math.Max(section.SizeOfRawData, section.VirtualSize),
+                    VirtualSize = Math.Max(emittedRawSize, section.VirtualSize),
                     PointerToRawData = (uint)imageFileByteOffsets[i],
-                    SizeOfRawData = section.SizeOfRawData,
+                    SizeOfRawData = emittedRawSize,
                     SectionName = (uint)(sectionHeaderNameByteOffset + XbeImageConstants.StandardBaseAddress),
                     SectionReferenceCount = 0,
                     SectionFlags = XbeImageConstants.SectionExecutable,
@@ -1149,7 +1174,7 @@ public sealed class XbeImageBuilder
                     xbeSection.SectionFlags |= XbeImageConstants.SectionPreload;
                 }
 
-                XbeImageCrypto.CalcDigest(sectionData, xbeSection.SectionDigest);
+                XbeImageCrypto.CalcDigest(sectionImage, xbeSection.SectionDigest);
 
                 if (!firstSharedReferenceCount &&
                     Pe32Helpers.PageAlign((int)xbeSection.VirtualAddress) !=
