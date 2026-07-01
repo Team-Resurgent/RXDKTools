@@ -1,5 +1,6 @@
 using Rxdk.Pdb.Msf;
 using Rxdk.Pdb.Pdb;
+using Rxdk.Pdb.Tpi;
 
 namespace Rxdk.Pdb;
 
@@ -11,6 +12,8 @@ public sealed class PdbImage
 {
     private readonly MsfFile _msf;
     private PdbInfoStream? _info;
+    private TpiStream? _tpi;
+    private TypeSystem? _types;
 
     private PdbImage(MsfFile msf) => _msf = msf;
 
@@ -23,4 +26,10 @@ public sealed class PdbImage
 
     /// <summary>PDB Information stream (version, signature, age, GUID, named streams).</summary>
     public PdbInfoStream Info => _info ??= PdbInfoStream.Parse(_msf.ReadStream(PdbInfoStream.StreamIndex));
+
+    /// <summary>TPI stream (CodeView type records).</summary>
+    public TpiStream Tpi => _tpi ??= TpiStream.Parse(_msf.ReadStream(TpiStream.StreamIndex));
+
+    /// <summary>Type resolver over the TPI stream (sizes, names, pointer/array shape, members).</summary>
+    public TypeSystem Types => _types ??= new TypeSystem(Tpi);
 }

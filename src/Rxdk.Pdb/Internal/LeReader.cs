@@ -92,6 +92,30 @@ internal sealed class LeReader
         return text;
     }
 
+    /// <summary>
+    /// Reads a CodeView "numeric leaf": a u16 that is either an immediate value (&lt; LF_NUMERIC
+    /// 0x8000) or a type code introducing a wider inline value. Used for struct sizes, array
+    /// lengths, and member offsets. Returns the magnitude as a signed 64-bit value.
+    /// </summary>
+    internal long ReadNumericLeaf()
+    {
+        var kind = ReadUInt16();
+        if (kind < 0x8000)
+            return kind;
+
+        return kind switch
+        {
+            0x8000 => (sbyte)ReadByte(),   // LF_CHAR
+            0x8001 => ReadInt16(),          // LF_SHORT
+            0x8002 => ReadUInt16(),         // LF_USHORT
+            0x8003 => ReadInt32(),          // LF_LONG
+            0x8004 => ReadUInt32(),         // LF_ULONG
+            0x8009 => (long)ReadUInt64(),   // LF_QUADWORD
+            0x800A => (long)ReadUInt64(),   // LF_UQUADWORD
+            _ => throw new NotSupportedException($"Unsupported numeric leaf 0x{kind:x4}."),
+        };
+    }
+
     /// <summary>CodeView symbol records 4-byte-align their trailing name; skip to the next boundary.</summary>
     internal void Align(int alignment)
     {
