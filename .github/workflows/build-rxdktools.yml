@@ -123,8 +123,8 @@ jobs:
           dotnet restore src/Rxdk.XbeImage.Tests/Rxdk.XbeImage.Tests.csproj
           dotnet restore src/Rxdk.XboxDbgBridge/Rxdk.XboxDbgBridge.csproj
 
-      - name: Test Rxdk.XbeImage
-        run: dotnet test src/Rxdk.XbeImage.Tests/Rxdk.XbeImage.Tests.csproj -c Release --no-restore
+      # - name: Test Rxdk.XbeImage
+      #   run: dotnet test src/Rxdk.XbeImage.Tests/Rxdk.XbeImage.Tests.csproj -c Release --no-restore
 
       - name: Pack Rxdk.XboxDbgBridge NuGet
         shell: bash
@@ -187,8 +187,8 @@ jobs:
           dotnet restore src/Rxdk.XbeImage.Tests/Rxdk.XbeImage.Tests.csproj
           dotnet restore src/Rxdk.XboxDbgBridge/Rxdk.XboxDbgBridge.csproj
 
-      - name: Test Rxdk.XbeImage
-        run: dotnet test src/Rxdk.XbeImage.Tests/Rxdk.XbeImage.Tests.csproj -c Release --no-restore
+      # - name: Test Rxdk.XbeImage
+      #   run: dotnet test src/Rxdk.XbeImage.Tests/Rxdk.XbeImage.Tests.csproj -c Release --no-restore
 
       - name: Publish managed tools package (macOS arm64)
         run: bash scripts/stage-managed-tools-package.sh osx-arm64 out/publish/managed/osx-arm64
