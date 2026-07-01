@@ -23,5 +23,7 @@
   <ItemGroup>
     <!-- Legacy XDK-produced PDB already checked into the repo; a valid MSF 7.00 container. -->
     <None Include="..\TestFiles\TriangleXDK.pdb" Link="TestData\TriangleXDK.pdb" CopyToOutputDirectory="PreserveNewest" />
+    <!-- Tiny modern-format PDB (clang -gcodeview, same S_LOCAL/S_DEFRANGE records as Zig). -->
+    <None Include="..\TestFiles\MiniLocals.pdb" Link="TestData\MiniLocals.pdb" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

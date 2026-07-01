@@ -1,6 +1,7 @@
 using Rxdk.Pdb.Dbi;
 using Rxdk.Pdb.Msf;
 using Rxdk.Pdb.Pdb;
+using Rxdk.Pdb.Symbols;
 using Rxdk.Pdb.Tpi;
 
 namespace Rxdk.Pdb;
@@ -16,6 +17,7 @@ public sealed class PdbImage
     private TpiStream? _tpi;
     private TypeSystem? _types;
     private DbiStream? _dbi;
+    private SymbolReader? _symbols;
 
     private PdbImage(MsfFile msf) => _msf = msf;
 
@@ -37,4 +39,10 @@ public sealed class PdbImage
 
     /// <summary>DBI stream (modules, section contributions, section headers; RVA→module lookup).</summary>
     public DbiStream Dbi => _dbi ??= DbiStream.Parse(_msf);
+
+    /// <summary>Per-module symbol reader (procedures + frame-relative locals).</summary>
+    public SymbolReader Symbols => _symbols ??= new SymbolReader(_msf, Dbi);
+
+    /// <summary>Finds the function containing an image RVA and returns its frame-relative locals.</summary>
+    public FrameInfo? FindFrame(uint rva) => Symbols.FindFrame(rva);
 }
